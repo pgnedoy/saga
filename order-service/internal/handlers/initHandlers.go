@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"github.com/pgnedoy/saga/order-service/internal/repository"
 	"github.com/pgnedoy/saga/order-service/internal/usecases"
 )
 
 func InitHandlers() (*Handlers, error) {
-	createOrder := usecases.NewCreateOrder()
+	repo := repository.NewRepoAdapter()
+	createOrder, _ := usecases.NewCreateOrder(&usecases.CreateOrderConfig{Repo: repo})
 	handlers, err := NewHandlers(&HandlersConfig{
 		CreateOrder: createOrder,
 	})
