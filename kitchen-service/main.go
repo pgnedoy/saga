@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/pgnedoy/saga/kitchen-service/cmd"
+)
 
 func main() {
-	fmt.Println("Kitchen service")
+	cmd.Execute()
 }
