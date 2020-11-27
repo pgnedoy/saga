@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/pgnedoy/saga/accounting-service/cmd"
 
 func main() {
-	fmt.Println("Accounting service")
+	cmd.Execute()
 }
