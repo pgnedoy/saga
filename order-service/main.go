@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/pgnedoy/saga/order-service/cmd"
+)
 
 func main() {
-	fmt.Println("Order service")
+	cmd.Execute()
 }
