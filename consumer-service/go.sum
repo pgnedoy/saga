@@ -183,8 +183,11 @@ github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtP
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pelletier/go-toml v1.8.0/go.mod h1:D6yutnOGMveHEPV7VQOuvI/gXY61bv+9bAOTRnLElKs=
 github.com/pgnedoy/saga v0.0.0-20201127153345-4aa24d987097 h1:fePveiiQGNcv6Z1X4JqpXpSeIZL69W4aWYKhCqDRX/k=
+github.com/pgnedoy/saga v0.0.0-20201127162812-05726c51663b h1:TDo+KgMkqPbCcC8q/bR6kkPgjGbMjUskzyQnVpNXM4M=
 github.com/pgnedoy/saga/core v0.0.0-20201127153345-4aa24d987097 h1:hKgZDAwmLy2aIzXzojL/t1WxuEo3yhNdXD+Td0D9Bb4=
 github.com/pgnedoy/saga/core v0.0.0-20201127153345-4aa24d987097/go.mod h1:kEkR6h1umwJszCzoy5TZrAsEUZceEo5LuBt5P0vXDU4=
+github.com/pgnedoy/saga/core v0.0.0-20201127162812-05726c51663b h1:GWw9ajgqeoiOrwIR0JO+Xfpeb8GuJ0QmHhT6VQqIV3o=
+github.com/pgnedoy/saga/core v0.0.0-20201127162812-05726c51663b/go.mod h1:kEkR6h1umwJszCzoy5TZrAsEUZceEo5LuBt5P0vXDU4=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
