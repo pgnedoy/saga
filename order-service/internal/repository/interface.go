@@ -8,5 +8,6 @@ import (
 
 type Repository interface {
 	FindOrderByID(ctx context.Context, orderID string) (*data.Order, error)
-	SaveOrder(ctx context.Context, order data.Order) error
+	CreateOrder(ctx context.Context, order data.Order) error
+	UpdateOrder(ctx context.Context, order data.Order) error
 }

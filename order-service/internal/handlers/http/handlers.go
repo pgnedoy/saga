@@ -1,10 +1,12 @@
-package handlers
+package http
 
 import (
+	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
 
+	"github.com/pgnedoy/saga/core/data"
 	"github.com/pgnedoy/saga/order-service/internal/usecases"
 )
 
@@ -38,6 +40,11 @@ func (h *Handlers) HealthCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) CreateOrder(w http.ResponseWriter, r *http.Request) {
-	h.createOrder.Execute(r.Context())
+	var order data.Order
+
+	// todo: handle err
+	json.NewDecoder(r.Body).Decode(&order)
+
+	h.createOrder.Execute(r.Context(), order)
 	w.WriteHeader(http.StatusOK)
 }

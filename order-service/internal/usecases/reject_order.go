@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/pgnedoy/saga/core/data"
 	"github.com/pgnedoy/saga/core/log"
 	"github.com/pgnedoy/saga/order-service/internal/repository"
 )
@@ -30,6 +31,13 @@ func NewRejectOrder(cfg *RejectOrderConfig) (*RejectOrder, error) {
 	}, nil
 }
 
-func (co *RejectOrder) Execute(ctx context.Context) {
-	log.Info(ctx, "reject order usecase")
+func (co *RejectOrder) Execute(ctx context.Context, order data.Order) error {
+	order.Status = data.StatusRejected
+	err := co.repo.UpdateOrder(ctx, order)
+	if err != nil {
+		log.Info(ctx, "error order rejecting", log.WithError(err))
+		// todo: return reserved error
+		return err
+	}
+	return nil
 }

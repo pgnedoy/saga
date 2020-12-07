@@ -3,11 +3,14 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/pgnedoy/saga/core/http"
 	"github.com/pgnedoy/saga/core/log"
-	"github.com/pgnedoy/saga/order-service/internal/handlers"
+	"github.com/pgnedoy/saga/order-service/config/postgres"
+	httphandlers "github.com/pgnedoy/saga/order-service/internal/handlers/http"
+	"github.com/pgnedoy/saga/order-service/internal/repository"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +23,11 @@ var serverCommand = &cobra.Command{
 			cancel()
 		}()
 
-		handlers, err := handlers.InitHandlers()
+		conn := postgres.GetConnection(&postgres.ConnConfig{Url: os.Getenv("DB_URL")})
+		repo := repository.NewRepoAdapter(&repository.RepoAdapterConfig{DB: conn})
+		handlers, err := httphandlers.InitHandlers(&httphandlers.InitHandlersConfig{
+			Repo: repo,
+		})
 		if err != nil {
 			log.Panic(ctx, "init handlers error", log.WithError(err))
 		}

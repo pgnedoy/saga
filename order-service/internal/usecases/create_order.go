@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/pgnedoy/saga/core/data"
 	"github.com/pgnedoy/saga/core/log"
 	"github.com/pgnedoy/saga/order-service/internal/repository"
 )
@@ -30,6 +31,13 @@ func NewCreateOrder(cfg *CreateOrderConfig) (*CreateOrder, error) {
 	}, nil
 }
 
-func (co *CreateOrder) Execute(ctx context.Context) {
-	log.Info(ctx, "create order usecase")
+func (co *CreateOrder) Execute(ctx context.Context, order data.Order) error {
+	order.Status = data.StatusPending
+	err := co.repo.CreateOrder(ctx, order)
+	if err != nil {
+		log.Info(ctx, "error order creating", log.WithError(err))
+		// todo: return reserved error
+		return err
+	}
+	return nil
 }
