@@ -1,14 +1,21 @@
-package handlers
+package http
 
 import (
 	"errors"
 	"io"
 	"net/http"
+
+	"github.com/pgnedoy/saga/consumer-service/internal/usecases"
 )
 
-type Handlers struct {}
+type Handlers struct {
+	createConsumer *usecases.CreateConsumer
+	verifyConsumer *usecases.VerifyConsumer
+}
 
 type HandlersConfig struct {
+	CreateConsumer *usecases.CreateConsumer
+	VerifyConsumer *usecases.VerifyConsumer
 }
 
 func NewHandlers(cfg *HandlersConfig) (*Handlers, error) {
@@ -16,7 +23,10 @@ func NewHandlers(cfg *HandlersConfig) (*Handlers, error) {
 		return nil, errors.New("config is required")
 	}
 
-	return &Handlers{}, nil
+	return &Handlers{
+		createConsumer: cfg.CreateConsumer,
+		verifyConsumer: cfg.VerifyConsumer,
+	}, nil
 }
 
 func (h *Handlers) HealthCheck(w http.ResponseWriter, r *http.Request) {
