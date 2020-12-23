@@ -35,7 +35,7 @@ func (co *CreateTicket) Execute(ctx context.Context, ticket data.Ticket) error {
 	ticket.Status = data.StatusPending
 	err := co.repo.CreateTicket(ctx, ticket)
 	if err != nil {
-		log.Info(ctx, "error order creating", log.WithError(err))
+		log.Info(ctx, "error ticket creating", log.WithError(err))
 		// todo: return reserved error
 		return err
 	}

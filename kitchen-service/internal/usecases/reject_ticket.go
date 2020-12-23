@@ -36,7 +36,7 @@ func (rt *RejectTicket) Execute(ctx context.Context, ticketID string) error {
 	ticket.Status = data.StatusRejected
 	err = rt.repo.UpdateTicket(ctx, *ticket)
 	if err != nil {
-		log.Info(ctx, "error order rejecting", log.WithError(err))
+		log.Info(ctx, "error ticket rejecting", log.WithError(err))
 		// todo: return reserved error
 		return err
 	}
