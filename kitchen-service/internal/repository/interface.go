@@ -8,5 +8,6 @@ import (
 
 type Repository interface {
 	FindTicketByID(ctx context.Context, ticketID string) (*data.Ticket, error)
-	SaveTicket(ctx context.Context, ticket data.Ticket) error
+	CreateTicket(ctx context.Context, ticket data.Ticket) error
+	UpdateTicket(ctx context.Context, ticket data.Ticket) error
 }

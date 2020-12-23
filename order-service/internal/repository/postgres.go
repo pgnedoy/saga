@@ -68,6 +68,7 @@ func (r *RepoAdapter) CreateOrder(ctx context.Context, order data.Order) error {
 	err = tx.Commit()
 	if err != nil {
 		log.Error(ctx, "error transaction committing", log.WithError(err))
+		tx.Rollback()
 		return err
 	}
 
@@ -93,6 +94,7 @@ func (r *RepoAdapter) UpdateOrder(ctx context.Context, order data.Order) error {
 	err = tx.Commit()
 	if err != nil {
 		log.Error(ctx, "error transaction committing", log.WithError(err))
+		tx.Rollback()
 		return err
 	}
 
