@@ -4,19 +4,20 @@ import (
 	"context"
 	"errors"
 
+	"github.com/pgnedoy/saga/core/data"
 	"github.com/pgnedoy/saga/core/log"
 	"github.com/pgnedoy/saga/kitchen-service/internal/repository"
 )
 
-type CreateOrder struct {
+type CreateTicket struct {
 	repo repository.Repository
 }
 
-type CreateOrderConfig struct {
+type CreateTicketConfig struct {
 	Repo repository.Repository
 }
 
-func NewCreateOrder(cfg *CreateOrderConfig) (*CreateOrder, error) {
+func NewCreateTicket(cfg *CreateTicketConfig) (*CreateTicket, error) {
 	if cfg == nil {
 		return nil, errors.New("")
 	}
@@ -25,11 +26,18 @@ func NewCreateOrder(cfg *CreateOrderConfig) (*CreateOrder, error) {
 		return nil, errors.New("")
 	}
 
-	return &CreateOrder{
+	return &CreateTicket{
 		repo: cfg.Repo,
 	}, nil
 }
 
-func (co *CreateOrder) Execute(ctx context.Context) {
-	log.Info(ctx, "create ticket usecase")
+func (co *CreateTicket) Execute(ctx context.Context, ticket data.Ticket) error {
+	ticket.Status = data.StatusPending
+	err := co.repo.CreateTicket(ctx, ticket)
+	if err != nil {
+		log.Info(ctx, "error order creating", log.WithError(err))
+		// todo: return reserved error
+		return err
+	}
+	return nil
 }

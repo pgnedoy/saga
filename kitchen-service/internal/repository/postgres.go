@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/pgnedoy/saga/core/data"
@@ -50,17 +51,43 @@ func (r *RepoAdapter) FindTicketByID(ctx context.Context, ticketID string) (*dat
 }
 
 func (r *RepoAdapter) CreateTicket(ctx context.Context, ticket data.Ticket) error {
-	createOrder, err := r.db.Prepare("INSERT INTO orders (name, quantity, status, consumer_id) VALUES ($1, $2, $3, $4)")
+	createOrder, err := r.db.Prepare("INSERT INTO orders (user_id, order_id, status) VALUES ($1, $2, $3)")
 	tx, err := r.db.Begin()
 	if err != nil {
 		log.Error(ctx, "error transaction begging", log.WithError(err))
 		return err
 	}
 
-	_, err = tx.StmtContext(ctx, createOrder).Exec(order.Name, order.Quantity, order.Status, order.ConsumerID)
+	_, err = tx.StmtContext(ctx, createOrder).Exec(ticket.UserID, ticket.OrderID, ticket.Status)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		log.Error(ctx, "error creating order", log.WithError(err))
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Error(ctx, "error transaction committing", log.WithError(err))
+		tx.Rollback()
+		return err
+	}
+
+	return nil
+}
+
+func (r *RepoAdapter) UpdateTicket(ctx context.Context, ticket data.Ticket) error {
+	updateOrder, err := r.db.Prepare("UPDATE tickets SET user_id=$1, order_id=$2, status=$3, updated_at=$4 WHERE id=$6")
+	tx, err := r.db.Begin()
+	if err != nil {
+		log.Error(ctx, "error transaction begging", log.WithError(err))
+		return err
+	}
+
+	_, err = tx.StmtContext(ctx, updateOrder).Exec(ticket.UserID, ticket.OrderID, ticket.Status, time.Now(), ticket.ID)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		log.Error(ctx, "error updating order", log.WithError(err))
 		tx.Rollback()
 		return err
 	}

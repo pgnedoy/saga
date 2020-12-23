@@ -4,19 +4,20 @@ import (
 	"context"
 	"errors"
 
+	"github.com/pgnedoy/saga/core/data"
 	"github.com/pgnedoy/saga/core/log"
 	"github.com/pgnedoy/saga/kitchen-service/internal/repository"
 )
 
-type RejectOrder struct {
+type RejectTicket struct {
 	repo repository.Repository
 }
 
-type RejectOrderConfig struct {
+type RejectTicketConfig struct {
 	Repo repository.Repository
 }
 
-func NewRejectOrder(cfg *RejectOrderConfig) (*RejectOrder, error) {
+func NewRejectTicket(cfg *RejectTicketConfig) (*RejectTicket, error) {
 	if cfg == nil {
 		return nil, errors.New("")
 	}
@@ -25,11 +26,19 @@ func NewRejectOrder(cfg *RejectOrderConfig) (*RejectOrder, error) {
 		return nil, errors.New("")
 	}
 
-	return &RejectOrder{
+	return &RejectTicket{
 		repo: cfg.Repo,
 	}, nil
 }
 
-func (co *RejectOrder) Execute(ctx context.Context) {
-	log.Info(ctx, "reject ticket usecase")
+func (rt *RejectTicket) Execute(ctx context.Context, ticketID string) error {
+	ticket, err := rt.repo.FindTicketByID(ctx, ticketID)
+	ticket.Status = data.StatusRejected
+	err = rt.repo.UpdateTicket(ctx, *ticket)
+	if err != nil {
+		log.Info(ctx, "error order rejecting", log.WithError(err))
+		// todo: return reserved error
+		return err
+	}
+	return nil
 }

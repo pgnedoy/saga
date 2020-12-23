@@ -4,19 +4,20 @@ import (
 	"context"
 	"errors"
 
+	"github.com/pgnedoy/saga/core/data"
 	"github.com/pgnedoy/saga/core/log"
 	"github.com/pgnedoy/saga/kitchen-service/internal/repository"
 )
 
-type ApproveOrder struct {
+type ApproveTicket struct {
 	repo repository.Repository
 }
 
-type ApproveOrderConfig struct {
+type ApproveTicketConfig struct {
 	Repo repository.Repository
 }
 
-func NewApproveOrder(cfg *ApproveOrderConfig) (*ApproveOrder, error) {
+func NewApproveTicket(cfg *ApproveTicketConfig) (*ApproveTicket, error) {
 	if cfg == nil {
 		return nil, errors.New("")
 	}
@@ -25,11 +26,19 @@ func NewApproveOrder(cfg *ApproveOrderConfig) (*ApproveOrder, error) {
 		return nil, errors.New("")
 	}
 
-	return &ApproveOrder{
+	return &ApproveTicket{
 		repo: cfg.Repo,
 	}, nil
 }
 
-func (co *ApproveOrder) Execute(ctx context.Context) {
-	log.Info(ctx, "approve ticket usecase")
+func (at *ApproveTicket) Execute(ctx context.Context, ticketID string) error {
+	ticket, err := at.repo.FindTicketByID(ctx, ticketID)
+	ticket.Status = data.StatusApproved
+	err = at.repo.UpdateTicket(ctx, *ticket)
+	if err != nil {
+		log.Info(ctx, "error ticket approving", log.WithError(err))
+		// todo: return reserved error
+		return err
+	}
+	return nil
 }
