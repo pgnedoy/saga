@@ -23,7 +23,13 @@ var serverCommand = &cobra.Command{
 			cancel()
 		}()
 
+		postgres.RunMigrations()
+
 		conn := postgres.GetConnection(&postgres.ConnConfig{Url: os.Getenv("DB_URL")})
+		defer func() {
+			conn.Close()
+		}()
+
 		repo := repository.NewRepoAdapter(&repository.RepoAdapterConfig{DB: conn})
 		handlers, err := httphandlers.InitHandlers(&httphandlers.InitHandlersConfig{Repo:repo})
 		if err != nil {
