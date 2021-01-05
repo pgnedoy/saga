@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/9count/go-services/core/log"
+	"github.com/pgnedoy/saga/core/log"
 )
 
 const (
