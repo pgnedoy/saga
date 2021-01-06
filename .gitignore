@@ -93,3 +93,5 @@ coverage.txt
 /build-outputs
 !/data-migrations/env/.env.example
 /data-migrations/env/.env.auth.local
+
+.env*

@@ -1,16 +1,23 @@
-version: '3'
+version: '3.8'
 services:
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+      args:
+        GITHUB_DEPLOY_KEY: exec cat ~/.ssh/git
+    env_file: ./order-service/env/.env.compose
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
   postgres:
     image: "postgres:13"
-    container_name: "saga-local"
+    container_name: "postgres-multi-database"
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_DB: 'saga'
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: 'local'
+    env_file: ./local-postgres/env/.env.compose
     volumes:
-      - my_dbdata:/var/lib/postgresql/data
+      - ./local-postgres:/docker-entrypoint-initdb.d
     command: ["postgres", "-c", "log_statement=all"]
-volumes:
-  my_dbdata:
+    restart: unless-stopped

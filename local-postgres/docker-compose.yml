@@ -1,0 +1,14 @@
+version: '3'
+services:
+  postgres:
+    image: "postgres:13"
+    container_name: "postgres-multi-database"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: orders,consumer,kitchen
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'local'
+    volumes:
+      - ../local-postgres:/docker-entrypoint-initdb.d
+    command: ["postgres", "-c", "log_statement=all"]

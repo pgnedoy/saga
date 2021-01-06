@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/pgnedoy/saga/core/http"
@@ -29,7 +30,7 @@ var serverCommand = &cobra.Command{
 		defer func() {
 			conn.Close()
 		}()
-		
+
 		repo := repository.NewRepoAdapter(&repository.RepoAdapterConfig{DB: conn})
 		handlers, err := httphandlers.InitHandlers(&httphandlers.InitHandlersConfig{
 			Repo: repo,
@@ -47,7 +48,11 @@ var serverCommand = &cobra.Command{
 			log.Error(ctx, "error creating server", log.WithError(err))
 		}
 
-		port := 5000
+		portStr, passed := os.LookupEnv("APP_PORT")
+		if passed == false {
+			log.Panic(ctx, "APP_PORT is required")
+		}
+		port, _ := strconv.Atoi(portStr)
 		log.Info(ctx, fmt.Sprintf("order-server has beed started on port %d", port))
 		err = s.Run(context.Background(), port)
 	},
@@ -56,4 +61,3 @@ var serverCommand = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(serverCommand)
 }
-
