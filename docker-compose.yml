@@ -11,6 +11,39 @@ services:
       - "5000:5000"
     restart: unless-stopped
 
+  kitchen-service:
+    build:
+      context: ./kitchen-service
+      dockerfile: Dockerfile
+      args:
+        GITHUB_DEPLOY_KEY: exec cat ~/.ssh/git
+    env_file: ./kitchen-service/env/.env.compose
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+
+  consumer-service:
+    build:
+      context: ./consumer-service
+      dockerfile: Dockerfile
+      args:
+        GITHUB_DEPLOY_KEY: exec cat ~/.ssh/git
+    env_file: ./consumer-service/env/.env.compose
+    ports:
+      - "5002:5002"
+    restart: unless-stopped
+
+  accounting-service:
+    build:
+      context: ./accounting-service
+      dockerfile: Dockerfile
+      args:
+        GITHUB_DEPLOY_KEY: exec cat ~/.ssh/git
+    env_file: ./accounting-service/env/.env.compose
+    ports:
+      - "5003:5003"
+    restart: unless-stopped
+
   postgres:
     image: "postgres:13"
     container_name: "postgres-multi-database"
