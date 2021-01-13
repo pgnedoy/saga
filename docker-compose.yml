@@ -59,17 +59,13 @@ services:
     image: localstack/localstack:latest
     container_name: localstack_demo
     ports:
-#      - '4566:4566' # localstack entrypoint
-      - '4563-4599:4563-4599'
-      - '8010:8010'
-#      - "4574:4574" # lambda
-      - '8080:8080'
+      - '4566:4566' # localstack entrypoint
     environment:
-      - SERVICES=sqs,sns,lambda
+      - SERVICES=sqs,lambda
       - DEBUG=1
       - DATA_DIR=/tmp/localstack/data
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - LAMBDA_EXECUTOR=docker
+      - LAMBDA_EXECUTOR=docker-reuse
     volumes:
       - './docker-volumes/localstack:/tmp/localstack'
       - '/var/run/docker.sock:/var/run/docker.sock'
