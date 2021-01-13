@@ -95,3 +95,5 @@ coverage.txt
 /data-migrations/env/.env.auth.local
 
 .env*
+
+docker-volumes/
