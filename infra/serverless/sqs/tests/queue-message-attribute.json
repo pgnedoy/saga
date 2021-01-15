@@ -1,0 +1,6 @@
+{
+  "eventType": {
+    "DataType": "String",
+    "StringValue": "TEST_EVENT"
+  }
+}

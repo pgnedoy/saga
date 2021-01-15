@@ -4,6 +4,8 @@ aws-prefix=aws --endpoint-url=http://localhost:4566 --region us-east-1
 
 QUEUE_NAME?=test
 QUEUE_URL?=test
+QUEUE_MESSAGE=
+QUEUE_MESSAGE_ATTR=
 
 services := consumer-service \
 		kitchen-service \
@@ -11,12 +13,12 @@ services := consumer-service \
 		order-service \
 		create-order-saga
 
-queue_prefix := channel
-handler_prefix := handler
+queue_prefix:=channel
+handler_prefix:=handler
 
-queues := $(foreach srv, $(services), $(srv)-$(queue_prefix))
-handlers := $(foreach srv, $(services), $(srv)-$(handler_prefix))
-sqs_mapping := $(services)
+queues:=$(foreach srv, $(services), $(srv)-$(queue_prefix))
+handlers:=$(foreach srv, $(services), $(srv)-$(handler_prefix))
+sqs_mapping:=$(services)
 
 up:
 	$(MAKE) create-queues 2>&1 | tee logs/create-queues.logs
@@ -39,6 +41,10 @@ list-queues:
 		--output=json 2>&1 | tee -a logs/list-queues.logs
 
 send-message:
+	$(aws-prefix) sqs send-message \
+		--queue-url=$(QUEUE_URL) \
+		--message-body=$(QUEUE_MESSAGE) \
+		--message-attribute=$(QUEUE_MESSAGE_ATTR)
 
 send-message-batch:
 
@@ -72,18 +78,13 @@ delete:
 	$(aws-prefix) lambda delete-function \
 		--function-name=$(FUNCTION_NAME)
 
-update-function-code:
-	$(aws-prefix) lambda update-function-code \
-		--function-name=$(FUNCTION_NAME) \
-		--zip-file fileb://bin/main.zip
-
 upload:
-	make build
-	make create
+	$(MAKE) -C ./handlers/$@ build
+	$(MAKE) create
 
 update:
-	make build
-	make update-function-code
+	$(MAKE) build
+	$(MAKE) update-function-code
 
 invoke:
 	$(aws-prefix) lambda invoke \
