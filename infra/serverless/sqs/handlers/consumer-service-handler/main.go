@@ -22,16 +22,6 @@ const (
 	EventTypeFieldName = "eventType"
 )
 
-type Event struct {
-	Event string `json:"event"`
-	Body interface{} `json:"body"`
-}
-
-type Req struct {
-	Url string
-	Event
-}
-
 var s = session.Must(session.NewSession(&aws.Config{
 	Credentials:      credentials.NewStaticCredentials("foo", "var", ""),
 	Region:           aws.String(endpoints.UsEast1RegionID),
@@ -43,18 +33,15 @@ var sqsClient = sqs.New(s, &aws.Config{})
 func validateMessage(msg *events.SQSMessage) error {
 	eventType, ok := msg.MessageAttributes[EventTypeFieldName]
 	if !ok {
-		return errors.New(fmt.Sprintf("MessageID: %s, Err: %s attribute is required!",
-			msg.MessageId, EventTypeFieldName))
+		return fmt.Errorf("MessageId: %s, err: %s attribute is required", msg.MessageId, EventTypeFieldName)
 	}
 
 	if eventType.StringValue == nil {
-		return errors.New(fmt.Sprintf("MessageID: %s, Err: %s value  is required!",
-			msg.MessageId, EventTypeFieldName))
+		return fmt.Errorf("MessageID: %s, Err: %s value  is required", msg.MessageId, EventTypeFieldName)
 	}
 
 	if eventType.DataType != "String" {
-		return errors.New(fmt.Sprintf("MessageID: %s, Err: %s type must be String!",
-			msg.MessageId, EventTypeFieldName))
+		return fmt.Errorf("MessageID: %s, err: %s type must be String", msg.MessageId, EventTypeFieldName)
 	}
 
 	return nil
