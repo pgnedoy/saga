@@ -9,4 +9,5 @@ const (
 	CardAuthorized = "CARD_AUTHORIZED"
 	ApproveRestaurantOrder = "APPROVE_RESTAURANT_ORDER"
 	ApproveOrder = "APPROVE_ORDER"
+	CreateOrder = "ORDER_CREATED"
 )

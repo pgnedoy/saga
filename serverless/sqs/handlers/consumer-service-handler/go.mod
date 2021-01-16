@@ -1,4 +1,4 @@
-module github.com/pgnedoy/saga/infra/serverless/sqs/handlers/consumer-service-handle
+module github.com/pgnedoy/saga/serverless/sqs/handlers/consumer-service-handle
 
 go 1.14
 
